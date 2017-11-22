@@ -1,4 +1,4 @@
-FROM isollab/node-boilerplate
+FROM ikolomiyets/node-boilerplate
 
 RUN adduser node root
 
