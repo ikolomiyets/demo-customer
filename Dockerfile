@@ -1,9 +1,6 @@
-FROM node:8-alpine
+FROM isollab/node-boilerplate
 
 RUN adduser node root
-
-COPY package.json /app/
-RUN cd /app; npm install
 
 COPY *.js /app/
 COPY bin/www /app/bin/www
