@@ -42,6 +42,7 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
         stage('Build Docker Image') {
             container('docker') {
                 sh "docker build -t docker-registry.default.svc:5000/demo/demo-customer:${version}.${env.BUILD_NUMBER} ."
+                input 'Wait'
                 sh "docker push docker-registry.default.svc:5000/demo/demo-customer:${version}.${env.BUILD_NUMBER}"
             }
         }
