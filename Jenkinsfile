@@ -46,6 +46,7 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
                 sh "docker build -t docker-registry.default.svc:5000/demo/demo-customer:${version}.${env.BUILD_NUMBER} ."
                 sh 'cat /var/run/secrets/kubernetes.io/serviceaccount/token | docker login --password-stdin --username jenkins-sa docker-registry.default.svc:5000'
                 sh "docker push docker-registry.default.svc:5000/demo/demo-customer:${version}.${env.BUILD_NUMBER}"
+                sh "docker push docker-registry.default.svc:5000/demo/demo-customer:latest"
                 milestone()
             }
         }
