@@ -1,6 +1,6 @@
 podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jenkins-sa',
   containers: [
-    containerTemplate(name: 'docker', image: 'docker:dind', ttyEnabled: true, command: 'cat', privileged: true, instanceCap: 1),
+    containerTemplate(name: 'docker', image: 'docker:dind', ttyEnabled: true, command: 'cat',
     containerTemplate(name: 'sonarqube', image: 'iktech/sonarqube-scanner', ttyEnabled: true, command: 'cat')
   ],
   volumes: [
