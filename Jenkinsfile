@@ -1,6 +1,6 @@
 podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jenkins-sa',
   containers: [
-    containerTemplate(name: 'docker', image: 'docker:dind', ttyEnabled: true, command: 'cat', privileged: true),
+    containerTemplate(name: 'docker', image: 'docker:dind', ttyEnabled: true, command: 'cat'),
     containerTemplate(name: 'sonarqube', image: 'iktech/sonarqube-scanner', ttyEnabled: true, command: 'cat')
   ],
   volumes: [
@@ -39,6 +39,7 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
 
         stage('Build Docker Image') {
             container('docker') {
+                input 'What?'
                 sh 'docker build -t docker-registry.default.svc:5000/demo/demo-customer .'
             }
         }
