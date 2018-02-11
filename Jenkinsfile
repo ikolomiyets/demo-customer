@@ -51,6 +51,7 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
         }
 
         stage('Tag Source Code') {
+            input 'wait'
             def repositoryCommitterEmail = "jenkins@iktech.io"
             def repositoryCommitterUsername = "jenkinsCI"
             values = version.tokenize(".")
