@@ -1,3 +1,5 @@
+version="1.0.0"
+
 podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jenkins-sa',
   containers: [
     containerTemplate(name: 'docker', image: 'docker:dind', ttyEnabled: true, command: 'cat', privileged: true),
@@ -39,8 +41,8 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
 
         stage('Build Docker Image') {
             container('docker') {
-                input 'What?'
-                sh 'docker build -t docker-registry.default.svc:5000/demo/demo-customer .'
+                sh "docker build -t docker-registry.default.svc:5000/demo/demo-customer:${version}.${env.BUILD_NUMBER} ."
+                sh "docker push docker-registry.default.svc:5000/demo/demo-customer:${version}.${env.BUILD_NUMBER}"
             }
         }
     }
