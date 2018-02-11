@@ -1,5 +1,6 @@
 podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jenkins-sa',
   containers: [
+    containerTemplate(name: 'docker', image: 'docker:dind', ttyEnabled: true, command: 'cat', privileged: true, instanceCap: 1),
     containerTemplate(name: 'sonarqube', image: 'iktech/sonarqube-scanner', ttyEnabled: true, command: 'cat')
   ],
   volumes: [
@@ -33,6 +34,12 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
                     slackSend color: "danger", message: "Build Failure Quality gate failure ${qg.status} - ${env.JOB_NAME}:${env.BUILD_NUMBER}"
                     error "Pipeline aborted due to quality gate failure: ${qg.status}"
                 }
+            }
+        }
+
+        stage('Build Docker Image') {
+            container('docker') {
+                sh 'docker build -t docker-registry.default.svc:5000/demo/demo-customer .'
             }
         }
     }
