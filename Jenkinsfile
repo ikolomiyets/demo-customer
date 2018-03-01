@@ -48,7 +48,7 @@ podTemplate(label: 'demo-customer-pod', cloud: 'kubernetes', serviceAccount: 'je
                         slackSend color: "danger", message: "Build Failure Quality gate failure ${qg.status} - ${env.JOB_NAME}:${env.BUILD_NUMBER}"
                         error "Pipeline aborted due to quality gate failure: ${qg.status}"
                     } else {
-                        milestone()
+                        milestone(2)
                     }
                 }
             }
@@ -61,7 +61,7 @@ podTemplate(label: 'demo-customer-pod', cloud: 'kubernetes', serviceAccount: 'je
                 sh "docker push ${image}"
                 sh "docker tag ${image} ${repository}:${tag}"
                 sh "docker push ${repository}:${tag}"
-                milestone(2)
+                milestone(3)
             }
         }
 
@@ -88,13 +88,13 @@ podTemplate(label: 'demo-customer-pod', cloud: 'kubernetes', serviceAccount: 'je
                 sh "git tag -a v${version}.${env.BUILD_NUMBER} -m \"passed CI\""
                 sh "git push -f --tags"
 
-                milestone(3)
+                milestone(4)
             }
         }
         stage('Deploy Latest') {
             container('kubectl') {
                 sh "kubectl patch -n ${namespace} deployment demo-customer -p '{\"spec\": { \"template\" : {\"spec\" : {\"containers\" : [{ \"name\" : \"demo-customer\", \"image\" : \"${image}\"}]}}}}'"
-                milestone(4)
+                milestone(5)
             }
         }
     }
