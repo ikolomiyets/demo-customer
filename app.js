@@ -1,6 +1,13 @@
 var appInsights = require("applicationinsights");
-appInsights.setup("74d643b7-a6f4-4f7e-91dc-b8e2ac13ff3d");
-appInsights.start();
+appInsights.setup("74d643b7-a6f4-4f7e-91dc-b8e2ac13ff3d")
+    .setAutoDependencyCorrelation(true)
+    .setAutoCollectRequests(true)
+    .setAutoCollectPerformance(true)
+    .setAutoCollectExceptions(true)
+    .setAutoCollectDependencies(true)
+    .setAutoCollectConsole(true)
+    .setUseDiskRetryCaching(true)
+    .start();
 
 var express = require('express');
 var path = require('path');
