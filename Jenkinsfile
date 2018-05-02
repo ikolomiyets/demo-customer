@@ -10,7 +10,8 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
         envVars: [secretEnvVar(key: 'DOCKER_USERNAME', secretName: 'ikolomiyets-docker-hub-credentials', secretKey: 'username'),
     ]),
     containerTemplate(name: 'kubectl', image: 'roffe/kubectl', ttyEnabled: true, command: 'cat'),
-    containerTemplate(name: 'sonarqube', image: 'iktech/sonarqube-scanner', ttyEnabled: true, command: 'cat')
+    containerTemplate(name: 'sonarqube', image: 'iktech/sonarqube-scanner', ttyEnabled: true, command: 'cat'),
+    containerTemplate(name: 'node', image: 'node', ttyEnabled: true, command: 'cat')
   ],
   volumes: [
     secretVolume(secretName: 'sonar-scanner.properties', mountPath: '/opt/sonar-scanner/conf'),
@@ -53,6 +54,13 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
 //            }
 //        }
 
+        stage('Install Dependencies') {
+            container('node') {
+                sh "npm install"
+                milestone(3)
+            }
+        }
+
         stage('Build Docker Image') {
             container('docker') {
                 sh "docker build -t ${image} ."
@@ -60,7 +68,7 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
                 sh "docker push ${image}"
                 sh "docker tag ${image} ${repository}:${tag}"
                 sh "docker push ${repository}:${tag}"
-                milestone(3)
+                milestone(4)
             }
         }
 
@@ -87,13 +95,13 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
                 sh "git tag -a v${version}.${env.BUILD_NUMBER} -m \"passed CI\""
                 sh "git push -f --tags"
 
-                milestone(4)
+                milestone(5)
             }
         }
         stage('Deploy Latest') {
             container('kubectl') {
                 sh "kubectl patch -n ${namespace} deployment demo-customer -p '{\"spec\": { \"template\" : {\"spec\" : {\"containers\" : [{ \"name\" : \"demo-customer\", \"image\" : \"${image}\"}]}}}}'"
-                milestone(5)
+                milestone(6)
             }
         }
     }

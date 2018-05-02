@@ -3,6 +3,7 @@ FROM ikolomiyets/node-boilerplate
 RUN adduser node root
 
 COPY *.js /app/
+COPY node_modules /app/
 COPY bin/www /app/bin/www
 COPY routes/*.js /app/routes/
 
