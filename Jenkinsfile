@@ -25,6 +25,7 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
                 container('sonarqube') {
                   lock(resource: 'demo-customers') {
                     try {
+                        input 'Debugging'
                         def scannerHome = tool 'sonarqube-scanner';
                         withSonarQubeEnv('Sonarqube') {
                             sh "${scannerHome}/bin/sonar-scanner"
