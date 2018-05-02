@@ -2,9 +2,9 @@ version="1.0.0"
 repository="ikolomiyets/demo-customer"
 tag="latest"
 image="${repository}:${version}.${env.BUILD_NUMBER}"
-namespace="kube-demo"
+namespace="demo"
 
-podTemplate(label: 'demo-customer-pod', cloud: 'kubernetes', serviceAccount: 'jenkins',
+podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jenkins-sa',
   containers: [
     containerTemplate(name: 'docker', image: 'docker:dind', ttyEnabled: true, command: 'cat', privileged: true,
         envVars: [secretEnvVar(key: 'DOCKER_USERNAME', secretName: 'docker-hub-credentials', secretKey: 'username'),
