@@ -21,39 +21,37 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
         stage('Prepare') {
             checkout scm
 
-            stage('SonarQube Analysis') {
-                container('sonarqube') {
-                  lock(resource: 'demo-customers') {
-                    try {
-                        input 'Debugging'
-                        def scannerHome = tool 'sonarqube-scanner';
-                        withSonarQubeEnv('Sonarqube') {
-                            sh "${scannerHome}/bin/sonar-scanner"
-                        }
-                    } catch (error) {
-                        slackSend color: "danger", message: "Build Failure - ${env.JOB_NAME} build number ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
-                        throw error
-                    }
-                  }
-                }
-            }
-
+//            stage('SonarQube Analysis') {
+//                container('sonarqube') {
+//                  lock(resource: 'demo-customers') {
+//                    try {
+//                        def scannerHome = tool 'sonarqube-scanner';
+//                        withSonarQubeEnv('Sonarqube') {
+//                            sh "${scannerHome}/bin/sonar-scanner"
+//                        }
+//                    } catch (error) {
+//                        slackSend color: "danger", message: "Build Failure - ${env.JOB_NAME} build number ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+//                        throw error
+//                    }
+//                  }
+//                }
+//            }
         }
 
-        stage("Quality Gate") {
-            milestone(1)
-            lock(resource: 'demo-customers') {
-                timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
-                    def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-                    if (qg.status != 'OK') {
-                        slackSend color: "danger", message: "Build Failure Quality gate failure ${qg.status} - ${env.JOB_NAME}:${env.BUILD_NUMBER}"
-                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                    } else {
-                        milestone(2)
-                    }
-                }
-            }
-        }
+//        stage("Quality Gate") {
+//            milestone(1)
+//            lock(resource: 'demo-customers') {
+//                timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
+//                    def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+//                    if (qg.status != 'OK') {
+//                        slackSend color: "danger", message: "Build Failure Quality gate failure ${qg.status} - ${env.JOB_NAME}:${env.BUILD_NUMBER}"
+//                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
+//                    } else {
+//                        milestone(2)
+//                    }
+//                }
+//            }
+//        }
 
         stage('Build Docker Image') {
             container('docker') {
