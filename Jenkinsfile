@@ -14,7 +14,7 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
   ],
   volumes: [
     secretVolume(secretName: 'sonar-scanner.properties', mountPath: '/opt/sonar-scanner/conf'),
-    secretVolume(secretName: 'docker-hub-credentials', mountPath: '/etc/.secret'),
+    secretVolume(secretName: 'ikolomiyets-docker-hub-credentials', mountPath: '/etc/.secret'),
     hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')
   ]) {
     node('demo-customer-pod') {
