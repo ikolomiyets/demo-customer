@@ -14,12 +14,17 @@ podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jen
     containerTemplate(name: 'node', image: 'node', ttyEnabled: true, command: 'cat')
   ],
   volumes: [
+    secretVolume(mountPath: '/etc/.ssh', secretName: 'ssh-home'),
     secretVolume(secretName: 'ikolomiyets-docker-hub-credentials', mountPath: '/etc/.secret'),
     hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')
   ]) {
     node('demo-customer-pod') {
         stage('Prepare') {
             checkout scm
+
+            // Set up private key to access BitBucket
+            sh "cat /etc/.ssh/id_rsa > ~/.ssh/id_rsa"
+            sh "chmod 400 ~/.ssh/id_rsa"
 
             stage('SonarQube Analysis') {
                 container('sonarqube') {
