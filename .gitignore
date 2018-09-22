@@ -60,3 +60,4 @@ typings/
 .env
 .sonar_lock
 .scannerwork
+.idea
