@@ -27,6 +27,7 @@ const customers = {
 router.get('/customers/:customerId', function(req, res, next) {
     const customerId = req.params['customerId'];
     res.header('Content-Type', 'application/json');
+    res.header('Access-Control-Allow-Origin', '*');
     res.json(customers[customerId]);
 });
 
