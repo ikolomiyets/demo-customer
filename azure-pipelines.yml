@@ -11,7 +11,8 @@ resources:
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '4f510d90-ecc3-4842-90a1-b71a6480d1e8'
-  imageRepository: 'democustomer'
+  imageRepository: 'demo-customer'
+
   containerRegistry: 'iktech.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
@@ -28,12 +29,10 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
+      - task: Gradle@2
+        inputs:
+          gradleWrapperFile: 'gradlew'
+          tasks: 'clean build'
+          publishJUnitResults: false
+          javaHomeOption: 'JDKVersion'
+          sonarQubeRunAnalysis: false    
