@@ -2,6 +2,8 @@
 # Build and push an image to Azure Container Registry
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
+name: 1.2.0$(Rev:.r)
+
 trigger:
 - master
 
@@ -9,15 +11,9 @@ resources:
 - repo: self
 
 variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '4f510d90-ecc3-4842-90a1-b71a6480d1e8'
-  imageRepository: 'democustomer'
-  containerRegistry: 'iktech.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  tag: '$(Build.BuildId)'
-  
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  - group: demo
+  - name: vmImageName
+    value: 'ubuntu-latest'
 
 stages:
 - stage: Build
@@ -31,9 +27,19 @@ stages:
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
+        containerRegistry: $(containerRegistry)
+        command: 'buildAndPush'
+        Dockerfile: 'Dockerfile'
+        repository: 'ikolomiyets/demo-customers'
         tags: |
-          $(tag)
+          $(Build.BuildNumber)
+          latest
+    - task: publish-artifact@1
+      displayName: Publish artifact version in to the artifactz.io
+      inputs:
+        apiToken: $(artifactz.apiToken)
+        stage: 'Development'
+        flow: 'Standard'
+        name: 'demo-customer'
+        type: 'DockerImage'
+        version: $(Build.BuildNumber)
