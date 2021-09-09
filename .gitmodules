@@ -1,0 +1,3 @@
+[submodule "deployment/swarm"]
+	path = deployment/swarm
+	url = https://github.com/ikolomiyets/demo-swarm-deployment.git
