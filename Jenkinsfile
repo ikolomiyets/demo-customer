@@ -103,7 +103,7 @@ podTemplate(label: 'demo-customer-pod', cloud: 'kubernetes', serviceAccount: 'je
 
         stage('Deploy Latest') {
             container('kubectl') {
-                imput ''
+                input ''
                 sh "kubectl patch -n ${namespace} deployment demo-customer -p '{\"spec\": { \"template\" : {\"spec\" : {\"containers\" : [{ \"name\" : \"demo-customer\", \"image\" : \"${image}\"}]}}}}'"
                 milestone(6)
             }
