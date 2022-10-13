@@ -18,7 +18,7 @@ spec:
   selector:
     matchLabels:
       name: customers
-      environment: demo
+      environment: uat
       version: 0.0.1
   template:
     metadata:
