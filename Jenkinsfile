@@ -4,7 +4,7 @@ tag="latest"
 image="${repository}:${version}.${env.BUILD_NUMBER}"
 namespace="demo"
 
-podTemplate(label: 'demo-customer-pod', cloud: 'OpenShift', serviceAccount: 'jenkins',
+podTemplate(label: 'demo-customer-pod', cloud: 'kubernetes', serviceAccount: 'jenkins',
   containers: [
     containerTemplate(name: 'docker', image: 'docker:dind', ttyEnabled: true, command: 'cat', privileged: true,
         envVars: [secretEnvVar(key: 'DOCKER_USERNAME', secretName: 'ikolomiyets-docker-hub-credentials', secretKey: 'username'),
