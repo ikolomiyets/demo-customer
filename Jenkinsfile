@@ -118,7 +118,7 @@ podTemplate(label: 'demo-customer-pod', cloud: 'kubernetes', serviceAccount: 'je
                 try {
                     dir('deployment/uat') {
                         sh """
-                            sed 's/_VERSION_/${tag}/g' namespace.yaml | kubectl sapply -f -
+                            sed 's/_VERSION_/${tag}/g' namespace.yaml | kubectl apply -f -
                         """
                     }
                 } catch (error) {
