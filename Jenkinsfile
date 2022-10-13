@@ -76,6 +76,14 @@ podTemplate(label: 'demo-customer-pod', cloud: 'kubernetes', serviceAccount: 'je
             }
         }
 
+        stage('Publish Image Details to artifactz.io') {
+			publishArtifact name: 'demo-customers',
+							 type: 'DockerImage',
+							 stage: 'Development',
+							 flow: 'Simple',
+							 version: "${version}.${env.BUILD_NUMBER}"
+        }
+
         stage('Tag Source Code') {
             checkout scm
 
@@ -101,10 +109,28 @@ podTemplate(label: 'demo-customer-pod', cloud: 'kubernetes', serviceAccount: 'je
             milestone(5)
         }
 
+		stage('Push the version from the Development to production stage') {
+			pushArtifact name: 'demo-customers', stage: 'Development'
+		}
+
         stage('Deploy Latest') {
             container('kubectl') {
-                input ''
-                sh "kubectl patch -n ${namespace} deployment demo-customer -p '{\"spec\": { \"template\" : {\"spec\" : {\"containers\" : [{ \"name\" : \"demo-customer\", \"image\" : \"${image}\"}]}}}}'"
+                try {
+                    dir('deployment/uat') {
+                        sh """
+                            sed 's/_VERSION_/${tag}/g' namespace.yaml | kubectl sapply -f -
+                        """
+                    }
+                } catch (error) {
+                    echo 'Deployment failed: ' + error.toString()
+                    step([$class: 'Mailer',
+                        notifyEveryUnstableBuild: true,
+                        recipients: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
+                                                        [$class: 'DevelopersRecipientProvider']]),
+                        sendToIndividuals: true])
+                    slackSend color: "danger", message: "Build Failure - ${env.JOB_NAME} build number ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+                    throw error
+                }
                 milestone(6)
             }
         }
