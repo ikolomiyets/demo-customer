@@ -29,7 +29,7 @@ spec:
         version: 0.0.1
     spec:
       containers:
-        - name: www
+        - name: customer
           image: ikolomiyets/demo-customer:_VERSION_
           imagePullPolicy: Always
           ports:
@@ -80,6 +80,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: www
+                name: customers
                 port:
                   number: 3000
