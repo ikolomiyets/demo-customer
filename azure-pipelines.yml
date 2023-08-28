@@ -53,5 +53,5 @@ stages:
     - task: push-artifact@1
       inputs:
         apiToken: $(artifactz.apiToken)
-        stage: 'Integration Test'
+        stage: 'Development'
         name: 'demo-customers'
