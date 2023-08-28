@@ -20,12 +20,23 @@ const customers = {
     16: {
         firstName: 'Dermot',
         lastName: 'Finnegan',
-        address: 'Anacotty, Co. Limeric'
+        address: 'Anacotty, Co. Limerick'
     }
 };
 /* GET users listing. */
 router.get('/customers/:customerId', function(req, res, next) {
     const customerId = req.params['customerId'];
+    if (!customerId) {
+        res.sendStatus(400);
+        return;
+    }
+
+    const customer = customers[customerId];
+    if (!customer) {
+        res.sendStatus(404);
+        return;
+    }
+
     res.header('Content-Type', 'application/json');
     res.header('Access-Control-Allow-Origin', '*');
     res.json(customers[customerId]);
