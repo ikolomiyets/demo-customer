@@ -18,7 +18,7 @@ variables:
 stages:
 - stage: Build
   displayName: Build and push stage
-  jobs:  
+  jobs:
   - job: Build
     displayName: Build
     pool:
@@ -47,11 +47,11 @@ stages:
         apiToken: $(artifactz.apiToken)
         stage: 'Development'
         flow: 'Standard'
-        name: 'demo-customer'
+        name: 'demo-customers'
         type: 'DockerImage'
         version: $(Build.BuildNumber)
-    - task: PublishBuildArtifacts@1
+    - task: push-artifact@1
       inputs:
-        PathtoPublish: 'deployment/swarm'
-        ArtifactName: 'swarm'
-        publishLocation: 'Container'
+        apiToken: $(artifactz.apiToken)
+        stage: 'Integration Test'
+        name: 'demo-customers'
